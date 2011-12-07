@@ -114,106 +114,67 @@ public class SlimSeleniumDriver {
 	}
 	
 	//Element interaction methods
-	public boolean click(String locator) {
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
-		if (elementFound) {
-			seleniumInstance.click(locator);
-			return true;
-		}
-		return false;
+	public void click(String locator) {
+                seleniumInstance.click(locator);
 	}
 	
-	public boolean clickAt(String locator, String coordinates) {
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
-		if (elementFound) {
-			seleniumInstance.clickAt(locator, coordinates);
-			return true;
-		}
-		return false;
+	public void clickAt(String locator, String coordinates) {
+                seleniumInstance.clickAt(locator, coordinates);
 	}
 	
-	public boolean clickUpToTimes(String locator, int numberOfTimesToExecute) {
+	public void clickUpToTimes(String locator, int numberOfTimesToExecute) {
 		int tries = 0;
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
 		while (seleniumInstance.isElementPresent(locator) && tries <= numberOfTimesToExecute) {
 			try {
 				seleniumInstance.click(locator);
 			}
 			catch (SeleniumException e) {
-				if (e.getMessage().contains("not found")) {
-					return elementFound;
+				if (!e.getMessage().contains("not found")) {
+					throw e;
 				}
-				throw e;
+				
 			}
 			tries++;
 		}
-		return elementFound;
 	}
 	
-	public boolean focus(String locator) {
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
-		if (elementFound) {
-			seleniumInstance.focus(locator);
-			return true;
-		}
-		return false;
+	public void focus(String locator) {
+                seleniumInstance.focus(locator);
 	}
 	
-	public boolean makeChecked(String locator) {
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
-		if (elementFound) {
-			seleniumInstance.check(locator);
-			return true;
-		}
-		return false;
+	public void makeChecked(String locator) {
+                seleniumInstance.check(locator);
 	}
 	
-	public boolean makeNotChecked(String locator) {
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
-		if (elementFound) {
-			seleniumInstance.uncheck(locator);
-			return true;
-		}
-		return false;
+	public void makeNotChecked(String locator) {
+                seleniumInstance.uncheck(locator);
 	}
 	
-	public boolean select(String selectLocator, String optionLocator) {
-		boolean elementFound = seleniumInstance.isElementPresent(selectLocator);
-		if (elementFound && !isOptionAlreadySelected(selectLocator, optionLocator)) {
+	public void select(String selectLocator, String optionLocator) {
+		if (!isOptionAlreadySelected(selectLocator, optionLocator)) {
 			seleniumInstance.select(selectLocator, optionLocator);
 		}
-		return elementFound;
 	}
 	
-	public boolean type(String locator, String text) {
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
-		if (elementFound) {
-			seleniumInstance.type(locator, text);
-		}
-		return elementFound;
+	public void type(String locator, String text) {
+                seleniumInstance.type(locator, text);
 	}
 	
 	//_AndWait methods
-	public boolean clickAndWait(String locator) {
-		boolean elementFound = seleniumInstance.isElementPresent(locator);
-		if (elementFound) {
-			seleniumInstance.click(locator);
-			seleniumInstance.waitForPageToLoad(timeoutMilliseconds);
-		}
-		return elementFound;
+	public void clickAndWait(String locator) {
+                seleniumInstance.click(locator);
+                seleniumInstance.waitForPageToLoad(timeoutMilliseconds);
 	}
 	
-	public boolean selectAndWait(String selectLocator, String optionLocator) {
-		boolean elementFound = seleniumInstance.isElementPresent(selectLocator);
-		if (elementFound && !isOptionAlreadySelected(selectLocator, optionLocator)) {
-				seleniumInstance.select(selectLocator, optionLocator);
-				seleniumInstance.waitForPageToLoad(timeoutMilliseconds);
+	public void selectAndWait(String selectLocator, String optionLocator) {
+		if (!isOptionAlreadySelected(selectLocator, optionLocator)) {
+                        seleniumInstance.select(selectLocator, optionLocator);
+                        seleniumInstance.waitForPageToLoad(timeoutMilliseconds);
 		}
-		return elementFound;
 	}
 	
 	//waitFor_ methods
-	public boolean waitForEditable(String locator) {
+	public void waitForEditable(String locator) {
 		Wait w = new WaitForElementToBeEditable(locator);
 		try {
 			w.wait("Element " + locator + " not editable after " + timeoutSeconds + " seconds", Long.parseLong(timeoutMilliseconds));
@@ -226,10 +187,9 @@ public class SlimSeleniumDriver {
 				throw e;
 			}
 		}
-		return true;
 	}
 	
-	public boolean waitForElementPresent(String locator) {
+	public void waitForElementPresent(String locator) {
 		Wait w = new WaitForElementToAppear(locator);
 		try {
 			w.wait("Cannot find element " +locator+ " after "+timeoutSeconds+" seconds", Long.parseLong(timeoutMilliseconds));
@@ -242,10 +202,9 @@ public class SlimSeleniumDriver {
 				throw e;
 			}
 		}
-		return true;
 	}
 	
-	public boolean waitForElementNotPresent(String locator) {
+	public void waitForElementNotPresent(String locator) {
 		Wait w = new WaitForElementToDisappear(locator);
 		try {
 			w.wait("Element " +locator+ " still present after "+timeoutSeconds+" seconds", Long.parseLong(timeoutMilliseconds));
@@ -258,10 +217,9 @@ public class SlimSeleniumDriver {
 				throw e;
 			}
 		}
-		return true;
 	}
 	
-	public boolean waitForVisible(String locator) {
+	public void waitForVisible(String locator) {
 		Wait x=new WaitForElementToBeVisible(locator);
 		try {
 			x.wait("Element " + locator + " not visible after " + timeoutSeconds + " seconds", Long.parseLong(timeoutMilliseconds));
@@ -274,10 +232,9 @@ public class SlimSeleniumDriver {
 				throw e;
 			}
         }
-        return true;
 	}
 	
-	public boolean waitForNotVisible(String locator) {
+	public void waitForNotVisible(String locator) {
 		Wait x=new WaitForElementToBeInvisible(locator);
 		try {
 			x.wait("Element " + locator + " still visible after " + timeoutSeconds + " seconds", Long.parseLong(timeoutMilliseconds));
@@ -290,10 +247,9 @@ public class SlimSeleniumDriver {
 				throw e;
 			}
         }
-        return true;
 	}
 	
-	public boolean waitForTextPresent(String text){
+	public void waitForTextPresent(String text){
         Wait x=new WaitForTextToAppear(text);
         try {
         	x.wait("Cannot find text " +text+ " after "+timeoutSeconds+" seconds", Long.parseLong(timeoutMilliseconds));
@@ -306,10 +262,9 @@ public class SlimSeleniumDriver {
 				throw e;
 			}
         }
-        return true;
 	}
 	
-	public boolean waitForTextNotPresent(String text){
+	public void waitForTextNotPresent(String text){
 		Wait x=new WaitForTextToDisappear(text);
 		try {
         	x.wait("Text " +text+ " still present after "+timeoutSeconds+" seconds", Long.parseLong(timeoutMilliseconds));
@@ -322,13 +277,11 @@ public class SlimSeleniumDriver {
 				throw e;
 			}
         }
-        return true;
 	}
 	
-	public boolean waitForSelectedLabel(String selectLocator, String label) {
+	public void waitForSelectedLabel(String selectLocator, String label) {
 		Wait x=new WaitForLabelToBeSelected(selectLocator, label);
-		boolean elementFound = seleniumInstance.isElementPresent(selectLocator); 
-		if (elementFound) {
+
 			try {
 				x.wait("Option with label " +label+ " not selected in " + selectLocator + " after " + timeoutSeconds 
 						+ " seconds", Long.parseLong(timeoutMilliseconds));
@@ -341,8 +294,6 @@ public class SlimSeleniumDriver {
 					throw e;
 				}
 	        }
-		}
-        return elementFound;
 	}
 	
 	//Waiter classes
